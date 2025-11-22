@@ -12,9 +12,9 @@ Model name is converted to lowercase for the collection name:
 """
 
 from pydantic import BaseModel, Field
-from typing import Optional
+from typing import Optional, List, Dict
 
-# Example schemas (replace with your own):
+# Example schemas (kept for reference):
 
 class User(BaseModel):
     """
@@ -38,8 +38,32 @@ class Product(BaseModel):
     category: str = Field(..., description="Product category")
     in_stock: bool = Field(True, description="Whether product is in stock")
 
-# Add your own schemas here:
-# --------------------------------------------------
+# App-specific schemas
+
+class Profile(BaseModel):
+    """
+    User style/beauty profile provided via the onboarding form.
+    Collection name: "profile"
+    """
+    name: Optional[str] = Field(None, description="User's name")
+    body_type: Optional[str] = Field(None, description="Body type (e.g., hourglass, pear, rectangle, inverted_triangle)")
+    skin_tone: Optional[str] = Field(None, description="Skin tone (fair, light, medium, tan, deep)")
+    undertone: Optional[str] = Field(None, description="Undertone (cool, warm, neutral)")
+    style_preferences: List[str] = Field(default_factory=list, description="Preferred styles like minimal, streetwear, classic, edgy, boho")
+    occasions: List[str] = Field(default_factory=list, description="Typical occasions like work, casual, party, formal")
+    accessories_pref: List[str] = Field(default_factory=list, description="Accessory preferences like gold, silver, pearls, minimalist")
+    budget: Optional[str] = Field(None, description="Budget tier (budget, mid, premium)")
+
+class Recommendation(BaseModel):
+    """
+    Generated recommendations for a given profile.
+    Collection name: "recommendation"
+    """
+    profile_summary: Dict[str, str] = Field(default_factory=dict)
+    makeup: List[str] = Field(default_factory=list)
+    skincare: List[str] = Field(default_factory=list)
+    clothing: List[str] = Field(default_factory=list)
+    accessories: List[str] = Field(default_factory=list)
 
 # Note: The Flames database viewer will automatically:
 # 1. Read these schemas from GET /schema endpoint
